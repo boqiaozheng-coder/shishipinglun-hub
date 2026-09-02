@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>时评与事件中心</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header>
+    <div class="brand">📰 时评与事件中心</div>
+    <nav>
+      <button class="nav-btn active" data-view="events">🌍 事件中心</button>
+      <button class="nav-btn" data-view="comments">💬 我的评论</button>
+      <button class="nav-btn" data-view="tools">📥 文章下载器</button>
+    </nav>
+    <button id="btnAddEvent" class="primary">＋ 手动添加事件</button>
+  </header>
+
+  <main>
+    <!-- 事件中心 -->
+    <section id="view-events" class="view active">
+      <div class="toolbar">
+        <input id="searchInput" type="search" placeholder="搜索标题或来源…">
+        <div class="chips" id="areaChips">
+          <button class="chip active" data-area="">全部</button>
+          <button class="chip" data-area="domestic">🇨🇳 国内</button>
+          <button class="chip" data-area="international">🌐 国际</button>
+        </div>
+        <button id="btnRefresh" class="ghost">🔄 同步最新事件</button>
+      </div>
+      <p class="hint" id="eventCount"></p>
+      <div id="eventList" class="cards"></div>
+    </section>
+
+    <!-- 我的评论 -->
+    <section id="view-comments" class="view">
+      <h2>💬 我的评论与讨论</h2>
+      <div id="commentList"></div>
+    </section>
+
+    <!-- 文章下载器说明 -->
+    <section id="view-tools" class="view">
+      <h2>📥 时评文章下载器</h2>
+      <div class="card doc-card">
+        <p>下载人民日报「人民时评/今日谈」、求是网、半月谈、纽约时报观点文章，导出 PDF / Word，归档到桌面。</p>
+        <div class="btn-row">
+          <label class="dim" style="display:flex;align-items:center;gap:6px">每栏目
+            <input id="dlCount" type="number" min="1" max="30" value="5" style="width:64px">
+            篇
+          </label>
+          <button id="btnRunDownload" class="primary">▶ 现在下载</button>
+          <span id="dlStatus" class="dim"></span>
+        </div>
+        <p class="codeblock">cd /Users/zhengboqiao/Documents/GitHub/shishipinglun-hub<br>
+        python3 main.py download</p>
+        <div class="btn-row">
+          <button class="ghost copy-btn" data-copy="cd /Users/zhengboqiao/Documents/GitHub/shishipinglun-hub && python3 main.py download">复制下载命令</button>
+          <button class="ghost copy-btn" data-copy="cd /Users/zhengboqiao/Documents/GitHub/shishipinglun-hub && python3 main.py events">复制“启动事件中心”命令</button>
+        </div>
+        <details>
+          <summary>常用参数（点击展开）</summary>
+          <pre>python3 download_articles.py --format pdf --count 10
+python3 download_articles.py --format docx --days 7
+python3 download_articles.py --sources rmsp,jrt,qs,byt</pre>
+        </details>
+        <p class="dim">说明文档：/Users/zhengboqiao/Documents/GitHub/shishipinglun-hub/README.md</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- 事件详情抽屉 -->
+  <div id="overlay" class="overlay hidden"></div>
+  <aside id="drawer" class="drawer hidden">
+    <div class="drawer-head">
+      <h3 id="drawerTitle">事件详情</h3>
+      <button id="btnCloseDrawer" class="icon-btn">✕</button>
+    </div>
+    <div id="drawerBody"></div>
+  </aside>
+
+  <!-- 添加事件弹窗 -->
+  <dialog id="addEventDlg">
+    <form method="dialog" id="addEventForm">
+      <h3>手动添加事件</h3>
+      <label>标题 *<input id="fTitle" required placeholder="事件标题"></label>
+      <div class="form-row">
+        <label>类别
+          <select id="fArea">
+            <option value="domestic">国内</option>
+            <option value="international">国际</option>
+          </select>
+        </label>
+        <label>日期<input id="fDate" type="date"></label>
+      </div>
+      <label>来源<input id="fSource" placeholder="如：新华社 / 我看到的新闻"></label>
+      <label>原文链接<input id="fUrl" type="url" placeholder="https://…"></label>
+      <label>简要背景<textarea id="fSummary" rows="3" placeholder="事件发生了什么、为什么重要"></textarea></label>
+      <div class="btn-row">
+        <button type="button" id="btnCancelAdd" class="ghost">取消</button>
+        <button type="submit" class="primary">保存</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast hidden"></div>
+  <script src="/app.js"></script>
+</body>
+</html>
