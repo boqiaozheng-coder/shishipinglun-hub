@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.DS_Store
+.venv/
+venv/
+event_center/data/*.tmp
+shishipinglun/events/data/*.tmp
+*.log
+build/
+dist/
+*.spec
+release/*.dmg
+release/*.dmg.sha256
+release/stage/
