@@ -1,0 +1,31 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "桌面窗口（desktop）",
+      "type": "python",
+      "request": "launch",
+      "module": "shishipinglun.desktop",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "文章下载",
+      "type": "python",
+      "request": "launch",
+      "module": "shishipinglun.downloader",
+      "cwd": "${workspaceFolder}",
+      "args": ["--format", "both", "--count", "5"],
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "事件同步",
+      "type": "python",
+      "request": "launch",
+      "module": "shishipinglun.events.sync_events",
+      "cwd": "${workspaceFolder}",
+      "args": ["--limit", "8"],
+      "console": "integratedTerminal"
+    }
+  ]
+}
