@@ -1,5 +1,8 @@
 # 时评与事件中心（shishipinglun-hub）
 
+> 🌐 GitHub（私有）：https://github.com/boqiaozheng-coder/shishipinglun-hub
+> Release v1.0.0：https://github.com/boqiaozheng-coder/shishipinglun-hub/releases/tag/v1.0.0
+
 一个本地运行的“软件”，把三件事合在一起：
 
 1. **文章下载**：抓取人民日报（人民时评 / 今日谈）、求是网社论评论、半月谈网评论、纽约时报 Opinion，导出 PDF / Word，按三大类别归档到桌面；
