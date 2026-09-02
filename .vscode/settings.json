@@ -1,0 +1,10 @@
+{
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/*.pyc": true,
+    "build": true,
+    "release/stage": true
+  },
+  "editor.formatOnSave": false,
+  "python.analysis.extraPaths": ["."]
+}
