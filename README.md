@@ -1,6 +1,6 @@
 # 时评与事件中心（shishipinglun-hub）
 
-> 🌐 GitHub（私有）：https://github.com/boqiaozheng-coder/shishipinglun-hub
+> 🌐 GitHub：https://github.com/boqiaozheng-coder/shishipinglun-hub
 > Release v1.0.0：https://github.com/boqiaozheng-coder/shishipinglun-hub/releases/tag/v1.0.0
 
 一个本地运行的“软件”，把三件事合在一起：
