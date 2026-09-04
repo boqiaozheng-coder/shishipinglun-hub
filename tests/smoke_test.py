@@ -81,11 +81,25 @@ def test_people_feed_sorts_before_limiting() -> None:
     print("✓ 人民网新闻先按日期排序再截取")
 
 
+def test_event_list_sorts_by_news_date() -> None:
+    from shishipinglun.events import server
+
+    events = [
+        {"title": "昨日补录", "date": "2026-09-03", "added_at": "2026-09-04T13:00:00+08:00"},
+        {"title": "今日事件", "date": "2026-09-04", "added_at": "2026-09-04T12:00:00+08:00"},
+        {"title": "今日稍后入库", "date": "2026-09-04", "added_at": "2026-09-04T12:30:00+08:00"},
+    ]
+    rows = sorted(events, key=server._event_sort_key, reverse=True)
+    assert [row["title"] for row in rows] == ["今日稍后入库", "今日事件", "昨日补录"]
+    print("✓ 事件列表按新闻日期排序")
+
+
 def main() -> int:
     test_imports()
     test_downloader_parser()
     test_static_files_exist()
     test_people_feed_sorts_before_limiting()
+    test_event_list_sorts_by_news_date()
     test_db_roundtrip()
     print("全部通过 ✔")
     return 0

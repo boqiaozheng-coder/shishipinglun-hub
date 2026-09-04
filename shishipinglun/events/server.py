@@ -48,6 +48,11 @@ DOWNLOAD_STATE = {
 }
 
 
+def _event_sort_key(event: dict) -> tuple[str, str]:
+    """事件列表以新闻日期为主、入库时间为辅，避免补录旧闻排到最前。"""
+    return (event.get("date", ""), event.get("added_at", ""))
+
+
 def _download_worker(count: int) -> None:
     try:
         from shishipinglun import downloader
@@ -156,7 +161,7 @@ class Handler(BaseHTTPRequestHandler):
                     for e in events
                     if q in (e.get("title", "") + " " + e.get("source", "")).lower()
                 ]
-            events = sorted(events, key=lambda e: e.get("added_at", ""), reverse=True)
+            events = sorted(events, key=_event_sort_key, reverse=True)
             body, status, ctype = _json({"events": events})
             self._send(body, status, ctype)
             return
