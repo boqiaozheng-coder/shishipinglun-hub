@@ -50,10 +50,42 @@ def test_static_files_exist() -> None:
     print("✓ 前端静态文件")
 
 
+def test_people_feed_sorts_before_limiting() -> None:
+    from shishipinglun.events import sync_events
+
+    class Response:
+        encoding = "utf-8"
+        apparent_encoding = "utf-8"
+        text = """
+            <a href="/n1/2026/0903/c1002-1.html">昨日置顶新闻</a>
+            <a href="/n1/2026/0902/c1002-2.html">更早新闻内容</a>
+            <a href="/n1/2026/0904/c1002-3.html">今日最新新闻</a>
+        """
+
+        def raise_for_status(self) -> None:
+            return None
+
+    class Session:
+        def get(self, url: str, timeout: int):
+            return Response()
+
+    feed = {
+        "area": "international",
+        "source": "测试源",
+        "url": "http://example.com/",
+        "pattern": sync_events.re.compile(r"/n1/20\d{2}/\d{4}/c1002-\d+\.html"),
+    }
+    rows = sync_events.fetch_people_list(Session(), feed, limit=2)
+    assert [row["date"] for row in rows] == ["2026-09-04", "2026-09-03"]
+    assert rows[0]["title"] == "今日最新新闻"
+    print("✓ 人民网新闻先按日期排序再截取")
+
+
 def main() -> int:
     test_imports()
     test_downloader_parser()
     test_static_files_exist()
+    test_people_feed_sorts_before_limiting()
     test_db_roundtrip()
     print("全部通过 ✔")
     return 0

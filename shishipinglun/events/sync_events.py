@@ -104,9 +104,12 @@ def fetch_people_list(session, feed, limit: int) -> list[dict]:
                 "date": _url_date(href),
             }
         )
-        if len(out) >= limit:
-            break
-    return out
+
+    # 人民网页面的 DOM 顺序并不总是时间顺序。例如国际频道可能先放置
+    # 昨日的置顶稿件，再列出今天的最新稿件。必须先收集候选并按日期
+    # 排序，再截取数量；否则 limit 较小时会把当天新闻全部漏掉。
+    out.sort(key=lambda item: item["date"], reverse=True)
+    return out[:limit]
 
 
 def _xml_child(el: ET.Element, *names: str) -> ET.Element | None:
