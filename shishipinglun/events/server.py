@@ -53,6 +53,15 @@ def _event_sort_key(event: dict) -> tuple[str, str]:
     return (event.get("date", ""), event.get("added_at", ""))
 
 
+def prepare_database() -> int:
+    """运行轻量数据迁移，确保事件卡片与详情能一一对应。"""
+    data = db.load_db()
+    repaired = db.repair_duplicate_ids(data)
+    if repaired:
+        db.save_db(data)
+    return repaired
+
+
 def _download_worker(count: int) -> None:
     try:
         from shishipinglun import downloader
@@ -338,6 +347,9 @@ def main() -> int:
     args = ap.parse_args()
 
     db.DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+    repaired = prepare_database()
+    if repaired:
+        print(f"已修复 {repaired} 条重复或缺失的记录 ID")
     server = ThreadingHTTPServer((args.host, args.port), Handler)
     print("=" * 56)
     print("  事件中心已启动")

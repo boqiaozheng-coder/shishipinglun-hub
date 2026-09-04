@@ -53,6 +53,10 @@ def main() -> int:
         events_server = _load_events_server()
     Handler = events_server.Handler
 
+    repaired = events_server.prepare_database()
+    if repaired:
+        print(f"已修复 {repaired} 条重复或缺失的记录 ID", flush=True)
+
     # 端口被占用时自动顺延，避免“窗口开了但内容不对”的困惑
     httpd = None
     for port in range(args.port, args.port + 10):

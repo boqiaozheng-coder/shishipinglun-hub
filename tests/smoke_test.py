@@ -25,6 +25,23 @@ def test_db_roundtrip() -> None:
     print("✓ db 读写")
 
 
+def test_ids_are_unique_and_legacy_duplicates_are_repaired() -> None:
+    from shishipinglun.events import db
+
+    generated = {db.new_id("ev") for _ in range(1000)}
+    assert len(generated) == 1000
+
+    data = {
+        "events": [{"id": "legacy", "title": "第一条"}, {"id": "legacy", "title": "第二条"}],
+        "comments": [{"id": "", "event_id": "legacy", "text": "评论"}],
+    }
+    assert db.repair_duplicate_ids(data) == 2
+    assert data["events"][0]["id"] == "legacy"
+    assert len({row["id"] for row in data["events"]}) == 2
+    assert data["comments"][0]["id"].startswith("cm_")
+    print("✓ 唯一 ID 与历史重复 ID 修复")
+
+
 def test_imports() -> None:
     import shishipinglun.desktop  # noqa: F401
     import shishipinglun.downloader  # noqa: F401
@@ -101,6 +118,7 @@ def main() -> int:
     test_people_feed_sorts_before_limiting()
     test_event_list_sorts_by_news_date()
     test_db_roundtrip()
+    test_ids_are_unique_and_legacy_duplicates_are_repaired()
     print("全部通过 ✔")
     return 0
 

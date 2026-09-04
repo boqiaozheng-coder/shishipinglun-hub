@@ -8,6 +8,7 @@ import json
 import shutil
 import sys
 import threading
+import uuid
 from pathlib import Path
 
 _EMPTY = {"events": [], "comments": []}
@@ -45,8 +46,29 @@ def now_iso() -> str:
 
 
 def new_id(prefix: str) -> str:
-    ts = dt.datetime.now().strftime("%y%m%d%H%M%S")
-    return f"{prefix}_{ts}_{abs(hash(prefix + ts + str(threading.get_ident()))) % 100000:05d}"
+    return f"{prefix}_{uuid.uuid4().hex}"
+
+
+def repair_duplicate_ids(data: dict) -> int:
+    """修复历史数据中缺失或重复的记录 ID，返回修复数量。
+
+    旧版 ID 只精确到秒，同一批同步的事件会得到完全相同的 ID，导致
+    点击任意卡片都打开该批第一条。保留每组的首个 ID，其余记录换成
+    UUID；已有评论仍继续关联首个记录，避免猜测其原始归属。
+    """
+    repaired = 0
+    for collection, prefix in (("events", "ev"), ("comments", "cm")):
+        seen: set[str] = set()
+        for record in data.get(collection, []):
+            record_id = record.get("id")
+            if not isinstance(record_id, str) or not record_id or record_id in seen:
+                record_id = new_id(prefix)
+                while record_id in seen:
+                    record_id = new_id(prefix)
+                record["id"] = record_id
+                repaired += 1
+            seen.add(record_id)
+    return repaired
 
 
 def load_db() -> dict:
